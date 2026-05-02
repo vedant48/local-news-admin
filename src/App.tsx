@@ -1,103 +1,43 @@
-import { ErrorComponent, GitHubBanner, Refine } from "@refinedev/core";
-import { DevtoolsPanel, DevtoolsProvider } from "@refinedev/devtools";
-import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
+import { Refine } from "@refinedev/core";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { dataProvider } from "@/services/dataProvider";
+import routerProvider, { CatchAllNavigate, NavigateToResource } from "@refinedev/react-router";
 
-import routerProvider, {
-  DocumentTitleHandler,
-  NavigateToResource,
-  UnsavedChangesNotifier,
-} from "@refinedev/react-router";
-import { BrowserRouter, Outlet, Route, Routes } from "react-router";
-import "./App.css";
-import { Layout } from "./components/layout";
-import {
-  BlogPostCreate,
-  BlogPostEdit,
-  BlogPostList,
-  BlogPostShow,
-} from "./pages/blog-posts";
-import {
-  CategoryCreate,
-  CategoryEdit,
-  CategoryList,
-  CategoryShow,
-} from "./pages/categories";
-import { dataProvider } from "./providers/data";
+import Login from "./pages/login";
+import Blogs from "./pages/blogs";
+import CreateBlog from "./pages/create-blog";
+import { authProvider } from "./services/authProvider";
+import Issues from "./pages/issues";
+import CreateIssue from "./pages/issues/create";
 
-function App() {
+export default function App() {
   return (
     <BrowserRouter>
-      <GitHubBanner />
-      <RefineKbarProvider>
-        <DevtoolsProvider>
-          <Refine
-            dataProvider={dataProvider}
-            routerProvider={routerProvider}
-            resources={[
-              {
-                name: "blog_posts",
-                list: "/blog-posts",
-                create: "/blog-posts/create",
-                edit: "/blog-posts/edit/:id",
-                show: "/blog-posts/show/:id",
-                meta: {
-                  canDelete: true,
-                },
-              },
-              {
-                name: "categories",
-                list: "/categories",
-                create: "/categories/create",
-                edit: "/categories/edit/:id",
-                show: "/categories/show/:id",
-                meta: {
-                  canDelete: true,
-                },
-              },
-            ]}
-            options={{
-              syncWithLocation: true,
-              warnWhenUnsavedChanges: true,
-              projectId: "IZ5xPk-IOVrE4-9tJWue",
-            }}
-          >
-            <Routes>
-              <Route
-                element={
-                  <Layout>
-                    <Outlet />
-                  </Layout>
-                }
-              >
-                <Route
-                  index
-                  element={<NavigateToResource resource="blog_posts" />}
-                />
-                <Route path="/blog-posts">
-                  <Route index element={<BlogPostList />} />
-                  <Route path="create" element={<BlogPostCreate />} />
-                  <Route path="edit/:id" element={<BlogPostEdit />} />
-                  <Route path="show/:id" element={<BlogPostShow />} />
-                </Route>
-                <Route path="/categories">
-                  <Route index element={<CategoryList />} />
-                  <Route path="create" element={<CategoryCreate />} />
-                  <Route path="edit/:id" element={<CategoryEdit />} />
-                  <Route path="show/:id" element={<CategoryShow />} />
-                </Route>
-                <Route path="*" element={<ErrorComponent />} />
-              </Route>
-            </Routes>
-
-            <RefineKbar />
-            <UnsavedChangesNotifier />
-            <DocumentTitleHandler />
-          </Refine>
-          <DevtoolsPanel />
-        </DevtoolsProvider>
-      </RefineKbarProvider>
+      <Refine
+        dataProvider={dataProvider}
+        authProvider={authProvider}
+        routerProvider={routerProvider}
+        resources={[
+          {
+            name: "blogs",
+            list: "/blogs",
+            create: "/create",
+          },
+          {
+            name: "issues",
+            list: "/issues",
+            create: "/issues/create",
+          },
+        ]}
+      >
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/blogs" element={<Blogs />} />
+          <Route path="/create" element={<CreateBlog />} />
+          <Route path="/issues" element={<Issues />} />
+          <Route path="/issues/create" element={<CreateIssue />} />
+        </Routes>
+      </Refine>
     </BrowserRouter>
   );
 }
-
-export default App;

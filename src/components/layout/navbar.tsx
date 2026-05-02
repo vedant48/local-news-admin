@@ -1,4 +1,4 @@
-import { LogOut, Bell, Sun, Moon } from "lucide-react";
+import { LogOut, Bell, Sun, Moon, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/providers/theme";
 
@@ -9,14 +9,27 @@ const pageTitles: Record<string, string> = {
   "/issues/create": "Report Issue",
 };
 
-export default function Navbar() {
+interface NavbarProps {
+  onMenuClick: () => void;
+}
+
+export default function Navbar({ onMenuClick }: NavbarProps) {
   const pathname = window.location.pathname;
   const title = pageTitles[pathname] ?? "Dashboard";
   const { theme, toggleTheme } = useTheme();
 
   return (
-    <header className="h-14 bg-background border-b flex items-center px-6 justify-between shrink-0">
+    <header className="h-14 bg-background border-b flex items-center px-4 sm:px-6 justify-between shrink-0">
       <div className="flex items-center gap-2">
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          className="lg:hidden text-muted-foreground"
+          onClick={onMenuClick}
+          aria-label="Toggle sidebar"
+        >
+          <Menu className="h-4 w-4" />
+        </Button>
         <h1 className="text-sm font-semibold text-foreground">{title}</h1>
       </div>
 
@@ -43,7 +56,7 @@ export default function Navbar() {
           }}
         >
           <LogOut className="h-4 w-4" />
-          Logout
+          <span className="hidden sm:inline">Logout</span>
         </Button>
       </div>
     </header>
